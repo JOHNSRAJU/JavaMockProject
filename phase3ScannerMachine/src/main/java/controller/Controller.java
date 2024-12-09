@@ -3,8 +3,11 @@ package controller;
 import model.Database;
 import model.Patient;
 public class Controller {
-		public Database db;
+		private Database db;
 	public Controller() {
 		db = new Database();
+	}
+	public Database getDb() {
+		return db;
 	}
 }

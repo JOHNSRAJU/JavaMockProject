@@ -119,10 +119,10 @@ public class Patient{
 		if(height<0) {
 			throw new IllegalArgumentException("Height should greater than Zero");
 		}
-		else if(height<0) {
+		else if(weight<0) {
 			throw new IllegalArgumentException("Weight should greater than Zero");
 		}
-		return (weight*10000)/(height*height);
+		return Math.round((weight*10000)/(height*height));
 	}
 	
 }

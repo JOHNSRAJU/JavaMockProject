@@ -8,8 +8,6 @@ import model.Patient;
 
 public class PatientTableModel extends AbstractTableModel{
 	private ArrayList<Patient> patientsData;
-	
-
 
 	public PatientTableModel(ArrayList<Patient> patientsData) {
 		super();
@@ -60,6 +58,7 @@ public class PatientTableModel extends AbstractTableModel{
 		// TODO Auto-generated method stub
 		return columnNames[column];
 	}
-	
-	
+	public Patient getData(int row) {
+		return patientsData.get(row);
+	}
 }

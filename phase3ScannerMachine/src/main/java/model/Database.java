@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Database {
-	public ArrayList<Patient> patients;
+	private ArrayList<Patient> patients;
 	private String filePath = "src\\main\\resources\\patients.json";
 	public Database() {
 //		Patient person = new Patient(1,"John Doe", 30,31,30, "New");
@@ -40,10 +40,18 @@ public class Database {
 	public static void writeJsonToFile(String filePath, List<Patient> array) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            objectMapper.writeValue(new File(filePath), array);
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(filePath), array);
             System.out.println("JSON written to file: " + filePath);
         } catch (IOException e) {
             System.err.println("Error writing JSON to file: " + e.getMessage());
         }
     }
+
+	public ArrayList<Patient> getPatients() {
+		return patients;
+	}
+
+	public void setPatients(ArrayList<Patient> patients) {
+		this.patients = patients;
+	}
 }

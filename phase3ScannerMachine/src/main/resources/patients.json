@@ -1,1 +1,28 @@
-[{"id":1,"name":"John Doe","age":30,"weight":31.0,"height":30.0,"bmi":344.44444444444446,"description":"New","status":"NEW"},{"id":1,"name":"Johns Raju","age":30,"weight":31.0,"height":30.0,"bmi":344.44444444444446,"description":"New","status":"NEW"},{"id":1,"name":"Joel James","age":30,"weight":31.0,"height":30.0,"bmi":344.44444444444446,"description":"New","status":"NEW"}]
+[ {
+  "id" : 1,
+  "name" : "John Doe",
+  "age" : 30,
+  "weight" : 31.0,
+  "height" : 30.0,
+  "bmi" : 344.0,
+  "description" : "New",
+  "status" : "NEW"
+}, {
+  "id" : 1,
+  "name" : "Johns Raju",
+  "age" : 30,
+  "weight" : 31.0,
+  "height" : 30.0,
+  "bmi" : 344.0,
+  "description" : "New",
+  "status" : "NEW"
+}, {
+  "id" : 1,
+  "name" : "Joel James",
+  "age" : 30,
+  "weight" : 31.0,
+  "height" : 30.0,
+  "bmi" : 344.0,
+  "description" : "New",
+  "status" : "NEW"
+} ]
