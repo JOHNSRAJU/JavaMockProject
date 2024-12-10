@@ -1,5 +1,6 @@
 package gui;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
@@ -38,7 +39,7 @@ public class PatientTableModel extends AbstractTableModel{
 		case 1:
 			return patient.getName();
 		case 2:
-			return patient.getAge();
+			return LocalDate.now().getYear()-patient.getDob().getYear();
 		case 3:
 			return patient.getWeight();
 		case 4:

@@ -2,10 +2,13 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import javax.swing.JFrame;
 
 import controller.Controller;
+import model.Patient;
 
 public class MainFrame extends JFrame{
 	private PatientTableModel patientTableModel;
@@ -13,6 +16,8 @@ public class MainFrame extends JFrame{
 	private Controller controller;
 	private AddButtonPanel addButtonPanel;
 	private AcceptPanel acceptPanel;
+	private SubmitListener submitListener;
+	private AddUserFrame addUserFrame;
 	public MainFrame() {
 		super("Patient Mock Scanner");
 		
@@ -26,7 +31,15 @@ public class MainFrame extends JFrame{
 		});
 		
 		addButtonPanel = new AddButtonPanel(()->{
-			new AddUserFrame(this);
+			addUserFrame = new AddUserFrame(this,()->{
+				Patient patient = controller.createPatientObject(addUserFrame.getFormPanel().getId().getText(), addUserFrame.getFormPanel().getPatientName().getText(),addUserFrame.getFormPanel().getDateChooser().getDate(), addUserFrame.getFormPanel().getWeight().getText(), addUserFrame.getFormPanel().getPatientHeight().getText(),addUserFrame.getFormPanel().getDescriptionArea().getText(),addUserFrame);
+				if(patient!=null) {
+					controller.addPatientToList(patient);
+					controller.writeJsonToFile(controller.getDb().getPatients());
+					controller.refreshTable(patientTableModel);
+					addUserFrame.dispose();
+				}
+			});
 		});
 		
 		setVisible(true);

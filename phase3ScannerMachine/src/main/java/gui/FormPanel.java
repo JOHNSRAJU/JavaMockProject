@@ -7,7 +7,20 @@ import javax.swing.*;
 import com.toedter.calendar.JDateChooser;
 
 public class FormPanel extends JPanel {
+	private JTextField id;
+	private JTextField name;
+	private JDateChooser dateChooser;
+	private JTextField weight;
+	private JTextField height;
+	private JTextArea descriptionArea;
     public FormPanel() {
+    	id = new JTextField(15);
+    	name = new JTextField(15);
+    	dateChooser = new JDateChooser();
+    	weight = new JTextField(15);
+    	height = new JTextField(15);
+    	descriptionArea = new JTextArea(3, 15);
+    	
         setLayout(new GridBagLayout());
 
         GridBagConstraints gc = new GridBagConstraints();
@@ -33,7 +46,7 @@ public class FormPanel extends JPanel {
 
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.WEST;
-        add(new JTextField(15), gc);
+        add(id, gc);
 
         // Row 2: Patient Name
         gc.gridy++;
@@ -43,7 +56,7 @@ public class FormPanel extends JPanel {
 
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.WEST;
-        add(new JTextField(15), gc);
+        add(name, gc);
 
         // Row 3: Date of Birth
         gc.gridy++;
@@ -54,7 +67,6 @@ public class FormPanel extends JPanel {
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.WEST;
 
-        JDateChooser dateChooser = new JDateChooser();
         dateChooser.setDateFormatString("dd-MM-yyyy");
         add(dateChooser, gc);
 
@@ -66,7 +78,7 @@ public class FormPanel extends JPanel {
 
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.WEST;
-        add(new JTextField(5), gc);
+        add(height, gc);
 
         // Row 5: Weight
         gc.gridy++;
@@ -76,7 +88,7 @@ public class FormPanel extends JPanel {
 
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.WEST;
-        add(new JTextField(5), gc);
+        add(weight, gc);
 
         // Row 6: Description
         gc.gridy++;
@@ -86,11 +98,28 @@ public class FormPanel extends JPanel {
 
         gc.gridx = 1;
         gc.anchor = GridBagConstraints.WEST;
-        JTextArea descriptionArea = new JTextArea(3, 15);
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         add(new JScrollPane(descriptionArea), gc);
-        
-        
     }
+	public JTextField getId() {
+		return id;
+	}
+	public JTextField getPatientName() {
+		return name;
+	}
+	public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+	public JTextField getWeight() {
+		return weight;
+	}
+	public JTextField getPatientHeight() {
+		return height;
+	}
+	public JTextArea getDescriptionArea() {
+		return descriptionArea;
+	}
+	
+    
 }

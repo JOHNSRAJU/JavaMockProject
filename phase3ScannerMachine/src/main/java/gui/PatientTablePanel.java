@@ -30,8 +30,4 @@ public class PatientTablePanel extends JPanel{
 			
 		});
 	}
-	public void refresh() {
-		patientTableModel.fireTableDataChanged();
-	}
-	
 }

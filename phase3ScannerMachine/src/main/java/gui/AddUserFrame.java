@@ -5,11 +5,13 @@ import java.awt.BorderLayout;
 import javax.swing.JFrame;
 
 public class AddUserFrame extends JFrame{
-	FormPanel formPanel;
-	SubmitButtonPanel submitButtonPanel;
+	private FormPanel formPanel;
+	private SubmitButtonPanel submitButtonPanel;
+	SubmitListener submitListener;
 	
-	public AddUserFrame(MainFrame mainFrame) {
+	public AddUserFrame(MainFrame mainFrame,SubmitListener submitListener) {
 		super("Add Patient");
+		this.submitListener = submitListener;
 		setVisible(true);
 		setResizable(false);
 		setSize(400, 450);
@@ -17,10 +19,15 @@ public class AddUserFrame extends JFrame{
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		formPanel = new FormPanel();
-		submitButtonPanel = new SubmitButtonPanel();
+		submitButtonPanel = new SubmitButtonPanel(submitListener);
 		
 		setLayout(new BorderLayout());
 		add(formPanel,BorderLayout.CENTER);
 		add(submitButtonPanel,BorderLayout.SOUTH);
 	}
+
+	public FormPanel getFormPanel() {
+		return formPanel;
+	}
+
 }
