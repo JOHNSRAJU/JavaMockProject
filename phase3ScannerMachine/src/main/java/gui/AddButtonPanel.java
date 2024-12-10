@@ -16,10 +16,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import controller.Controller;
+
 public class AddButtonPanel extends JPanel{
 	private JButton addPatientButton;
 	AddPatientListener addPatientListener;
-	AddButtonPanel(AddPatientListener addPatientListener){
+	AddButtonPanel(Controller controller,AddPatientListener addPatientListener){
 		this.addPatientListener = addPatientListener;
 		setLayout(new FlowLayout(FlowLayout.RIGHT));
 		addPatientButton = new JButton("+   Add Patient");
@@ -27,28 +29,9 @@ public class AddButtonPanel extends JPanel{
         addPatientButton.setForeground(Color.WHITE);
         addPatientButton.setBackground(new Color(34, 139, 34)); // Forest Green
         addPatientButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        // Add hover effect
-        addPatientButton.addMouseListener(new MouseAdapter() {
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				addPatientButton.setBackground(new Color(50, 205, 50));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				addPatientButton.setBackground(new Color(34, 139, 34));
-				
-			}
-        	
-        });
         
-        addPatientButton.addActionListener((event)->{
-        	if(event.getSource()==addPatientButton) {
-        		addPatientListener.addPatientClicked();
-        	}
-        });
+        controller.addMouseAndActionListener(addPatientButton, addPatientListener);
+        
         add(addPatientButton);
 	}
 }

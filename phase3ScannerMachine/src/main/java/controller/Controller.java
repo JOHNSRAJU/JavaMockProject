@@ -1,12 +1,18 @@
 package controller;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -14,6 +20,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import gui.AcceptPanel;
+import gui.AddPatientListener;
+import gui.AddUserFrame;
+import gui.MainFrame;
 import gui.PatientTableModel;
 import model.Database;
 import model.Patient;
@@ -75,7 +85,61 @@ public class Controller {
 	
 	public void refreshTable(PatientTableModel patientTableModel) {
 		patientTableModel.fireTableDataChanged();
-		
 	}
+	public void addAcceptPanel(MainFrame frame,AcceptPanel acceptPanel) {
+		frame.add(acceptPanel,BorderLayout.SOUTH);
+		frame.revalidate();
+	}
+	public void addUserAndWriteToJson(AddUserFrame addUserFrame,PatientTableModel patientTableModel) {
+		Patient patient = createPatientObject(addUserFrame.getFormPanel().getId().getText(), addUserFrame.getFormPanel().getPatientName().getText(),addUserFrame.getFormPanel().getDateChooser().getDate(), addUserFrame.getFormPanel().getWeight().getText(), addUserFrame.getFormPanel().getPatientHeight().getText(),addUserFrame.getFormPanel().getDescriptionArea().getText(),addUserFrame);
+		if(patient!=null) {
+			addPatientToList(patient);
+			writeJsonToFile(getDb().getPatients());
+			refreshTable(patientTableModel);
+			addUserFrame.dispose();
+		}
+	}
+	public void addMouseAndActionListener(JButton addPatientButton,AddPatientListener addPatientListener) {
+		addPatientButton.addMouseListener(new MouseAdapter() {
 
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				addPatientButton.setBackground(new Color(50, 205, 50));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				addPatientButton.setBackground(new Color(34, 139, 34));
+				
+			}
+        	
+        });
+        addPatientButton.addActionListener((event)->{
+        	if(event.getSource()==addPatientButton) {
+        		addPatientListener.addPatientClicked();
+        	}
+        });
+	}
+	public Object getValueForTableModel(int rowIndex,int columnIndex) {
+		Patient patient = db.getPatients().get(rowIndex);
+		switch (columnIndex) {
+		case 0:
+			return patient.getId();
+		case 1:
+			return patient.getName();
+		case 2:
+			return LocalDate.now().getYear()-patient.getDob().getYear();
+		case 3:
+			return patient.getWeight();
+		case 4:
+			return patient.getHeight();
+		case 5:
+			return patient.getBmi();
+		case 6:
+			return patient.getDescription();
+		case 7:
+			return patient.getStatus();
+		}
+		return null;
+	}
 }

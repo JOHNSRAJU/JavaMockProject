@@ -9,7 +9,7 @@ public class AcceptPanel extends JPanel{
 	private JButton acceptButton;
 	public AcceptPanel() {
 		acceptButton = new JButton("Accept");
-		
+	
 		setLayout(new FlowLayout(FlowLayout.RIGHT));
 		add(acceptButton);
 	}

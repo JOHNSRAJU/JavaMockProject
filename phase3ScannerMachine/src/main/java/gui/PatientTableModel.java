@@ -5,13 +5,15 @@ import java.util.ArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
+import controller.Controller;
 import model.Patient;
 
 public class PatientTableModel extends AbstractTableModel{
 	private ArrayList<Patient> patientsData;
-
-	public PatientTableModel(ArrayList<Patient> patientsData) {
+	Controller controller;
+	public PatientTableModel(ArrayList<Patient> patientsData,Controller controller) {
 		super();
+		this.controller=controller;
 		this.patientsData = patientsData;
 	}
 
@@ -32,26 +34,7 @@ public class PatientTableModel extends AbstractTableModel{
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		// TODO Auto-generated method stub
-		Patient patient = patientsData.get(rowIndex);
-		switch (columnIndex) {
-		case 0:
-			return patient.getId();
-		case 1:
-			return patient.getName();
-		case 2:
-			return LocalDate.now().getYear()-patient.getDob().getYear();
-		case 3:
-			return patient.getWeight();
-		case 4:
-			return patient.getHeight();
-		case 5:
-			return patient.getBmi();
-		case 6:
-			return patient.getDescription();
-		case 7:
-			return patient.getStatus();
-		}
-		return null;
+		return controller.getValueForTableModel(rowIndex,columnIndex);
 	}
 
 	@Override
