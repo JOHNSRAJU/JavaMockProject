@@ -15,6 +15,8 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
+import javax.swing.WindowConstants;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,10 +25,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import gui.AcceptPanel;
 import gui.AddPatientListener;
 import gui.AddUserFrame;
+import gui.FormPanel;
 import gui.MainFrame;
 import gui.PatientTableModel;
+import gui.ScanningWindow;
 import model.Database;
 import model.Patient;
+import model.Status;
 public class Controller {
 	private Database db;
 	static ObjectMapper objectMapper = new ObjectMapper();
@@ -43,7 +48,7 @@ public class Controller {
 
 
 	public static ArrayList<Patient> readJsonFromFile() {
-		
+
 		try {
 			return objectMapper.readValue(new File(FILEPATH), new TypeReference<ArrayList<Patient>>() {});
 		} catch (IOException e) {
@@ -54,15 +59,15 @@ public class Controller {
 	public void addPatientToList(Patient patient) {
 		db.getPatients().add(patient);
 	}
-	public void writeJsonToFile(List<Patient> array) {
+	public static void writeJsonToFile(List<Patient> array) {
 		try {
 			objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILEPATH), array);
-			
+
 		} catch (IOException e) {
 			System.err.println("Error writing JSON to file: " + e.getMessage());
 		}
 	}
-	
+
 	public static double calculateBMI(double weight,double height) {
 		if(height<0) {
 			throw new IllegalArgumentException("Height should greater than Zero");
@@ -72,17 +77,16 @@ public class Controller {
 		}
 		return Math.round((weight*10000)/(height*height));
 	}
-	
+
 	public Patient createPatientObject(String id,String name,Date dob, String weight,String height, String description,JFrame frame) {
 		if(id!=null&&name!=null&&dob!=null&&weight!=null&&height!=null) {
 			Patient patient = new Patient(Integer.parseInt(id), name, dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), Double.parseDouble(weight), Double.parseDouble(height), description);
 			System.out.println(patient);
 			return patient;
 		}
-		JOptionPane.showMessageDialog(frame, "Enter Full details : ","Error",JOptionPane.OK_OPTION|JOptionPane.ERROR_MESSAGE);
 		return null;
 	}
-	
+
 	public void refreshTable(PatientTableModel patientTableModel) {
 		patientTableModel.fireTableDataChanged();
 	}
@@ -90,13 +94,15 @@ public class Controller {
 		frame.add(acceptPanel,BorderLayout.SOUTH);
 		frame.revalidate();
 	}
-	public void addUserAndWriteToJson(AddUserFrame addUserFrame,PatientTableModel patientTableModel) {
-		Patient patient = createPatientObject(addUserFrame.getFormPanel().getId().getText(), addUserFrame.getFormPanel().getPatientName().getText(),addUserFrame.getFormPanel().getDateChooser().getDate(), addUserFrame.getFormPanel().getWeight().getText(), addUserFrame.getFormPanel().getPatientHeight().getText(),addUserFrame.getFormPanel().getDescriptionArea().getText(),addUserFrame);
-		if(patient!=null) {
-			addPatientToList(patient);
-			writeJsonToFile(getDb().getPatients());
-			refreshTable(patientTableModel);
-			addUserFrame.dispose();
+	public void addUserAndWriteToJson(MainFrame mainFrame, AddUserFrame addUserFrame,PatientTableModel patientTableModel) {
+		if(validateForm(addUserFrame.getFormPanel(), addUserFrame)) {
+			Patient patient = createPatientObject(addUserFrame.getFormPanel().getId().getText(), addUserFrame.getFormPanel().getPatientName().getText(),addUserFrame.getFormPanel().getDateChooser().getDate(), addUserFrame.getFormPanel().getWeight().getText(), addUserFrame.getFormPanel().getPatientHeight().getText(),addUserFrame.getFormPanel().getDescriptionArea().getText(),addUserFrame);
+			if(patient!=null) {
+				addPatientToList(patient);
+				writeJsonToFile(getDb().getPatients());
+				refreshTable(patientTableModel);
+				addUserFrame.dispose();
+			}
 		}
 	}
 	public void addMouseAndActionListener(JButton addPatientButton,AddPatientListener addPatientListener) {
@@ -110,15 +116,14 @@ public class Controller {
 			@Override
 			public void mouseExited(MouseEvent e) {
 				addPatientButton.setBackground(new Color(34, 139, 34));
-				
 			}
-        	
-        });
-        addPatientButton.addActionListener((event)->{
-        	if(event.getSource()==addPatientButton) {
-        		addPatientListener.addPatientClicked();
-        	}
-        });
+
+		});
+		addPatientButton.addActionListener((event)->{
+			if(event.getSource()==addPatientButton) {
+				addPatientListener.addPatientClicked();
+			}
+		});
 	}
 	public Object getValueForTableModel(int rowIndex,int columnIndex) {
 		Patient patient = db.getPatients().get(rowIndex);
@@ -141,5 +146,104 @@ public class Controller {
 			return patient.getStatus();
 		}
 		return null;
+	}
+
+	private boolean validateForm(FormPanel formPanel, JFrame frame) {
+
+		try {
+			int id = Integer.parseInt(formPanel.getId().getText());
+			if (id <= 0) {
+				showError("ID must be a positive number.",frame);
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			showError("ID must be a valid number.",frame);
+			return false;
+		}
+		if (formPanel.getPatientName().getText().isEmpty()) {
+			showError("Name is required.",frame);
+			return false;
+		}
+
+		if(formPanel.getDateChooser().getDate() == null){
+			showError("Date of Birth is required", frame);
+			return false;
+		}
+		LocalDate dob = formPanel.getDateChooser().getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		if (dob == null) {
+			showError("Invalid Date",frame);
+			return false;
+		}
+		else if((LocalDate.now().compareTo(dob))==-1) {
+			showError("Invalid Date",frame);
+			return false;
+		}
+		try {
+			double height = Double.parseDouble(formPanel.getPatientHeight().getText());
+			if (height <= 0) {
+				showError("Height must be a positive number.",frame);
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			showError("Height must be a valid number.",frame);
+			return false;
+		}
+
+		try {
+			double weight = Double.parseDouble(formPanel.getWeight().getText());
+			if (weight <= 0) {
+				showError("Weight must be a positive number.",frame);
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			showError("Weight must be a valid number.",frame);
+			return false;
+		}
+		if (formPanel.getDescriptionArea().getText().length()>200) {
+			showError("Description should below 200 characters.",frame);
+			return false;
+		}
+
+		return true; // If all checks passed
+	}
+	private void showError(String message, JFrame frame) {
+		JOptionPane.showMessageDialog(frame, message, "Error", JOptionPane.OK_OPTION|JOptionPane.ERROR_MESSAGE);	    
+	}
+
+	public static void addExitButtonListener(JButton exitButton,JProgressBar progressBar, ScanningWindow window, MainFrame mainFrame) {
+		exitButton.addActionListener((e)->{
+			if (progressBar.getValue() < 100) {
+				int response = JOptionPane.showConfirmDialog(
+						window, 
+						"The scan is not complete. Are you sure you want to exit?", 
+						"Confirm Exit", 
+						JOptionPane.YES_NO_OPTION, 
+						JOptionPane.WARNING_MESSAGE
+						);
+				if (response == JOptionPane.NO_OPTION) {
+					window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+				} else {
+					mainFrame.setEnabled(true);
+					window.dispose();
+				}
+			} else {
+				window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+			}
+		});
+	}
+	public static void addCompleteButtonListener(JButton completeButton,ScanningWindow window, MainFrame mainFrame,Patient patient,PatientTableModel tableModel) {
+		completeButton.addActionListener((event)->{
+			ArrayList<Patient> patients = readJsonFromFile();
+			for(Patient tempPatient : patients) {
+				if(patient.equals(tempPatient)) {
+					tempPatient.setStatus(Status.COMPLETED);
+				}
+			}
+			patient.setStatus(Status.COMPLETED);
+			writeJsonToFile(patients);
+			mainFrame.setEnabled(true);
+			tableModel.fireTableDataChanged();
+			window.dispose();
+		});
 	}
 }

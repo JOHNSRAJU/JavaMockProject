@@ -2,7 +2,7 @@ package model;
 
 import java.time.LocalDate;
 import java.util.Date;
-
+import java.util.Objects;
 
 import controller.Controller;
 
@@ -25,6 +25,25 @@ public class Patient{
 		this.description = description;
 		this.bmi = Controller.calculateBMI(weight, height);
 		this.status = Status.NEW;
+	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(bmi, description, dob, height, id, name, status, weight);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Patient other = (Patient) obj;
+		return Double.doubleToLongBits(bmi) == Double.doubleToLongBits(other.bmi)
+				&& Objects.equals(description, other.description) && Objects.equals(dob, other.dob)
+				&& Double.doubleToLongBits(height) == Double.doubleToLongBits(other.height) && id == other.id
+				&& Objects.equals(name, other.name) && status == other.status
+				&& Double.doubleToLongBits(weight) == Double.doubleToLongBits(other.weight);
 	}
 	public Patient() {
 		super();

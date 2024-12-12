@@ -45,4 +45,5 @@ public class PatientTableModel extends AbstractTableModel{
 	public Patient getData(int row) {
 		return patientsData.get(row);
 	}
+	
 }

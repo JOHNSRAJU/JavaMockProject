@@ -4,7 +4,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+
 import com.toedter.calendar.JDateChooser;
+
+import controller.Controller;
 
 public class FormPanel extends JPanel {
 	private JTextField id;
@@ -20,6 +25,28 @@ public class FormPanel extends JPanel {
     	weight = new JTextField(15);
     	height = new JTextField(15);
     	descriptionArea = new JTextArea(3, 15);
+    	descriptionArea.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				if(descriptionArea.getText().length()>200) {
+					//descriptionArea.
+				}
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
     	
         setLayout(new GridBagLayout());
 
@@ -101,6 +128,7 @@ public class FormPanel extends JPanel {
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         add(new JScrollPane(descriptionArea), gc);
+        
     }
 	public JTextField getId() {
 		return id;

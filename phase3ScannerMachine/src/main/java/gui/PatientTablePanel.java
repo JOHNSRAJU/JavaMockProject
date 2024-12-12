@@ -15,7 +15,7 @@ public class PatientTablePanel extends JPanel{
 	public PatientTablePanel(PatientTableModel patientTableModel,PatientSelectListener patientSelectListener) {
 		this.patientSelectListener = patientSelectListener;
 		this.patientTableModel = patientTableModel;
-		patientTable = new JTable(patientTableModel);
+		patientTable = new CustomPatientTable(patientTableModel);
 		setLayout(new BorderLayout());
 		add(new JScrollPane(patientTable),BorderLayout.CENTER);
 		
@@ -25,7 +25,6 @@ public class PatientTablePanel extends JPanel{
 			public void mouseClicked(MouseEvent e) {
 				int row = patientTable.rowAtPoint(e.getPoint());
 				patientSelectListener.patientSelected(PatientTablePanel.this.patientTableModel.getData(row));
-				
 			}
 			
 		});

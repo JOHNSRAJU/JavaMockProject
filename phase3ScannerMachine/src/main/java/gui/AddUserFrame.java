@@ -12,7 +12,6 @@ public class AddUserFrame extends JFrame{
 	public AddUserFrame(MainFrame mainFrame,SubmitListener submitListener) {
 		super("Add Patient");
 		this.submitListener = submitListener;
-		setVisible(true);
 		setResizable(false);
 		setSize(400, 450);
 		setLocationRelativeTo(mainFrame);
@@ -24,6 +23,8 @@ public class AddUserFrame extends JFrame{
 		setLayout(new BorderLayout());
 		add(formPanel,BorderLayout.CENTER);
 		add(submitButtonPanel,BorderLayout.SOUTH);
+		
+		setVisible(true);
 	}
 
 	public FormPanel getFormPanel() {
