@@ -10,17 +10,18 @@ import controller.Controller;
 import model.Patient;
 
 public class MainFrame extends JFrame{
-	
 	private PatientTableModel patientTableModel;
 	private PatientTablePanel patientTablePanel;
 	private Controller controller;
 	private AddButtonPanel addButtonPanel;
 	private AcceptPanel acceptPanel;
-	private AddUserFrame addUserFrame;
+	private AddPatientFrame addUserFrame;
 	private ScanningWindow scanningWindow;
 	private Patient selectedPatient;
+	private MenuBar menuBar;
 	public MainFrame() {
 		super("Patient Mock Scanner");
+		
 		controller = new Controller();
 		patientTableModel = new PatientTableModel(controller.getDb().getPatients(),controller);
 		patientTablePanel = new PatientTablePanel(patientTableModel,(patient)->{
@@ -32,8 +33,9 @@ public class MainFrame extends JFrame{
 			this.scanningWindow = new ScanningWindow(this,selectedPatient);
 		});
 		
+		menuBar = new MenuBar(patientTableModel,controller,this);
 		addButtonPanel = new AddButtonPanel(controller,()->{
-			addUserFrame = new AddUserFrame(this,()->{
+			addUserFrame = new AddPatientFrame(this,()->{
 				controller.addUserAndWriteToJson(this,addUserFrame, patientTableModel);
 			});
 		});
@@ -46,6 +48,7 @@ public class MainFrame extends JFrame{
 		
 		add(patientTablePanel,BorderLayout.CENTER);
 		add(addButtonPanel,BorderLayout.NORTH);
+		setJMenuBar(menuBar);
 		
 		setVisible(true);
 	}

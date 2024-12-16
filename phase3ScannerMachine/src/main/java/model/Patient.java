@@ -102,9 +102,6 @@ public class Patient{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
 	public double getBmi() {
 		return bmi;
 	}

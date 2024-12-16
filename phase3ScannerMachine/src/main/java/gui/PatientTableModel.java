@@ -17,7 +17,7 @@ public class PatientTableModel extends AbstractTableModel{
 		this.patientsData = patientsData;
 	}
 
-	private String[] columnNames = {"ID","Name","Age","Weight (kg)","Height (cm)","BMI (kg/m²)","Description","Status"}; 
+	private String[] columnNames = {"Sl No.","ID","Name","Age","Weight (kg)","Height (cm)","BMI (kg/m²)","Description","Status"}; 
 
 	@Override
 	public int getRowCount() {

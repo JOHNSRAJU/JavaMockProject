@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -24,7 +25,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import gui.AcceptPanel;
 import gui.AddPatientListener;
-import gui.AddUserFrame;
+import gui.AddPatientFrame;
 import gui.FormPanel;
 import gui.MainFrame;
 import gui.PatientTableModel;
@@ -75,7 +76,7 @@ public class Controller {
 		else if(weight<0) {
 			throw new IllegalArgumentException("Weight should greater than Zero");
 		}
-		return Math.round((weight*10000)/(height*height));
+		return Double.parseDouble(String.format("%.2f",(weight*10000)/(height*height)));
 	}
 
 	public Patient createPatientObject(String id,String name,Date dob, String weight,String height, String description,JFrame frame) {
@@ -94,7 +95,7 @@ public class Controller {
 		frame.add(acceptPanel,BorderLayout.SOUTH);
 		frame.revalidate();
 	}
-	public void addUserAndWriteToJson(MainFrame mainFrame, AddUserFrame addUserFrame,PatientTableModel patientTableModel) {
+	public void addUserAndWriteToJson(MainFrame mainFrame, AddPatientFrame addUserFrame,PatientTableModel patientTableModel) {
 		if(validateForm(addUserFrame.getFormPanel(), addUserFrame)) {
 			Patient patient = createPatientObject(addUserFrame.getFormPanel().getId().getText(), addUserFrame.getFormPanel().getPatientName().getText(),addUserFrame.getFormPanel().getDateChooser().getDate(), addUserFrame.getFormPanel().getWeight().getText(), addUserFrame.getFormPanel().getPatientHeight().getText(),addUserFrame.getFormPanel().getDescriptionArea().getText(),addUserFrame);
 			if(patient!=null) {
@@ -126,24 +127,28 @@ public class Controller {
 		});
 	}
 	public Object getValueForTableModel(int rowIndex,int columnIndex) {
-		Patient patient = db.getPatients().get(rowIndex);
-		switch (columnIndex) {
-		case 0:
-			return patient.getId();
-		case 1:
-			return patient.getName();
-		case 2:
-			return LocalDate.now().getYear()-patient.getDob().getYear();
-		case 3:
-			return patient.getWeight();
-		case 4:
-			return patient.getHeight();
-		case 5:
-			return patient.getBmi();
-		case 6:
-			return patient.getDescription();
-		case 7:
-			return patient.getStatus();
+		if (db.getPatients().size()>0) {
+			Patient patient = db.getPatients().get(rowIndex);
+			switch (columnIndex) {
+			case 0:
+				return rowIndex+1;
+			case 1:
+				return patient.getId();
+			case 2:
+				return patient.getName();
+			case 3:
+				return LocalDate.now().getYear()-patient.getDob().getYear();
+			case 4:
+				return patient.getWeight();
+			case 5:
+				return patient.getHeight();
+			case 6:
+				return patient.getBmi();
+			case 7:
+				return patient.getDescription();
+			case 8:
+				return patient.getStatus();
+			}
 		}
 		return null;
 	}
@@ -245,5 +250,72 @@ public class Controller {
 			tableModel.fireTableDataChanged();
 			window.dispose();
 		});
+	}
+	public static ArrayList<Patient> readJsonFile(File file) {
+		try {
+			return objectMapper.readValue(file, new TypeReference<ArrayList<Patient>>() {});
+		} catch (IOException e) {
+			System.err.println("Error reading JSON from file: " + e.getMessage());
+		}
+		return null;
+	}
+	
+	public void importData(PatientTableModel patientTableModel) {
+		JFileChooser fileChooser=new JFileChooser();
+		fileChooser.setDialogTitle("Import");
+		int returnValue = fileChooser.showOpenDialog(fileChooser);
+		
+		if (returnValue==JFileChooser.APPROVE_OPTION) {
+			File selectedFile = fileChooser.getSelectedFile();
+			ArrayList<Patient> importedPatients = Controller.readJsonFile(selectedFile);
+			if(importedPatients!=null) {
+				getDb().getPatients().addAll(importedPatients);
+				refreshTable(patientTableModel);
+				writeJsonToFile(getDb().getPatients());
+				JOptionPane.showMessageDialog(fileChooser, "Patient details successfully imported");
+			}else {
+				JOptionPane.showMessageDialog(fileChooser, "error");
+			}
+			
+		}
+	}
+	
+	public static void writeJsonToFile(List<Patient> array, File file) {
+		try {
+			objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, array);
+
+		} catch (IOException e) {
+			System.err.println("Error writing JSON to file: " + e.getMessage());
+		}
+	}
+	
+	public void exportData(PatientTableModel patientTableModel) {
+		JFileChooser fileChooser=new JFileChooser();
+		fileChooser.setDialogTitle("Export");
+		int returnValue = fileChooser.showSaveDialog(fileChooser);
+		if (returnValue==JFileChooser.APPROVE_OPTION) {
+			File saveFile = fileChooser.getSelectedFile();
+			if(db.getPatients()!=null||db.getPatients().size()>0) {
+				writeJsonToFile(db.getPatients(),saveFile);
+				JOptionPane.showMessageDialog(fileChooser, "Patient details successfully");
+			}
+			else {
+				JOptionPane.showMessageDialog(fileChooser, "Empty Data");
+			}
+		}
+	}
+	public void openData(PatientTableModel patientTableModel, MainFrame frame) {
+		if(JOptionPane.showConfirmDialog(frame,"Save","Do you want save current data?",JOptionPane.YES_NO_CANCEL_OPTION)==JOptionPane.YES_OPTION) {
+			exportData(patientTableModel);
+		}
+		db.getPatients().removeAll(db.getPatients());
+		importData(patientTableModel);
+	}
+	public void newFile(PatientTableModel patientTableModel, MainFrame frame) {
+		if(JOptionPane.showConfirmDialog(frame,"Save","Do you want save current data?",JOptionPane.YES_NO_CANCEL_OPTION)==JOptionPane.YES_OPTION) {
+			exportData(patientTableModel);
+		}
+		db.getPatients().removeAll(db.getPatients());
+		refreshTable(patientTableModel);
 	}
 }

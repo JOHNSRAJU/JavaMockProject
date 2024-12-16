@@ -37,7 +37,7 @@ public class FormPanel extends JPanel {
 			public void insertUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
 				if(descriptionArea.getText().length()>200) {
-					//descriptionArea.
+					JOptionPane.showMessageDialog(FormPanel.this, "Description should be below 200 characters.","Description Error",JOptionPane.OK_OPTION|JOptionPane.WARNING_MESSAGE);
 				}
 			}
 			
