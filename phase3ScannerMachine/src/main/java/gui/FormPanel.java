@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -58,7 +59,11 @@ public class FormPanel extends JPanel {
     	dateChooser = new JDateChooser();
     	weight = new JTextField(15);
     	height = new JTextField(15);
-    	descriptionArea = new JTextArea(3, 15);
+    	descriptionArea = new JTextArea(6, 15);
+//    	descriptionArea.setLineWrap(true);
+//    	descriptionArea.setWrapStyleWord(true);
+//    	descriptionArea.setPreferredSize(new Dimension(200,60));
+    	dateChooser.setSize(350, 300);
     	descriptionArea.getDocument().addDocumentListener(new DocumentListener() {
 			
 			@Override
@@ -83,11 +88,12 @@ public class FormPanel extends JPanel {
 		});
     	
         setLayout(new GridBagLayout());
-
         GridBagConstraints gc = new GridBagConstraints();
         gc.insets = new Insets(10, 10, 10, 10); // Add padding around components
         gc.fill = GridBagConstraints.HORIZONTAL; // Components stretch horizontally
-
+        gc.weightx = 1.0;
+        gc.weighty= 1.0;
+        gc.fill=GridBagConstraints.BOTH;
         // Title: Patient Form
         gc.gridx = 0;
         gc.gridy = 0;
@@ -102,7 +108,7 @@ public class FormPanel extends JPanel {
         gc.gridy++;
         gc.gridwidth = 1; // Reset gridwidth
         gc.gridx = 0;
-        gc.anchor = GridBagConstraints.EAST; // Align label to the right
+        gc.anchor = GridBagConstraints.FIRST_LINE_START; // Align label to the right
         add(new JLabel("Patient ID:"), gc);
 
         gc.gridx = 1;
@@ -112,7 +118,7 @@ public class FormPanel extends JPanel {
         // Row 2: Patient Name
         gc.gridy++;
         gc.gridx = 0;
-        gc.anchor = GridBagConstraints.EAST;
+        gc.anchor = GridBagConstraints.FIRST_LINE_START;
         add(new JLabel("Patient Name:"), gc);
 
         gc.gridx = 1;
@@ -122,7 +128,7 @@ public class FormPanel extends JPanel {
         // Row 3: Date of Birth
         gc.gridy++;
         gc.gridx = 0;
-        gc.anchor = GridBagConstraints.EAST;
+        gc.anchor = GridBagConstraints.FIRST_LINE_START;
         add(new JLabel("Date of Birth:"), gc);
 
         gc.gridx = 1;
@@ -134,7 +140,7 @@ public class FormPanel extends JPanel {
         // Row 4: Height
         gc.gridy++;
         gc.gridx = 0;
-        gc.anchor = GridBagConstraints.EAST;
+        gc.anchor = GridBagConstraints.FIRST_LINE_START;
         add(new JLabel("Height (cm):"), gc);
 
         gc.gridx = 1;
@@ -144,7 +150,7 @@ public class FormPanel extends JPanel {
         // Row 5: Weight
         gc.gridy++;
         gc.gridx = 0;
-        gc.anchor = GridBagConstraints.EAST;
+        gc.anchor = GridBagConstraints.FIRST_LINE_START;
         add(new JLabel("Weight (kg):"), gc);
 
         gc.gridx = 1;
@@ -154,7 +160,7 @@ public class FormPanel extends JPanel {
         // Row 6: Description
         gc.gridy++;
         gc.gridx = 0;
-        gc.anchor = GridBagConstraints.NORTHEAST; // Align top-right for multi-line label
+        gc.anchor = GridBagConstraints.FIRST_LINE_START; // Align top-right for multi-line label
         add(new JLabel("Description:"), gc);
 
         gc.gridx = 1;

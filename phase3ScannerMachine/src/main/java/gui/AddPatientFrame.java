@@ -31,7 +31,7 @@ public class AddPatientFrame extends JFrame{
 	}
 	private void setView(MainFrame mainFrame,AddPatientFrame patientFrame,FormPanel formPanel) {
 		patientFrame.setResizable(false);
-		patientFrame.setSize(400, 450);
+		patientFrame.setSize(400, 550);
 		patientFrame.setLocationRelativeTo(mainFrame);
 		patientFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		

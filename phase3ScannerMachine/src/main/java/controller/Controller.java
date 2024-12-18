@@ -18,14 +18,16 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.WindowConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
-import gui.BelowPanel;
 import gui.AddPatientFrame;
 import gui.AddPatientListener;
+import gui.BelowPanel;
+import gui.FileValidation;
 import gui.FormPanel;
 import gui.MainFrame;
 import gui.PatientTableModel;
@@ -36,12 +38,15 @@ import model.Status;
 public class Controller {
 	private Database db;
 	static ObjectMapper objectMapper = new ObjectMapper();
+	private JFileChooser fileChooser=new JFileChooser();
+	private FileNameExtensionFilter fileNameExtensionFilter = new FileNameExtensionFilter("JSON Files (*.json)", "json");
 	static {
 		objectMapper.registerModule(new JavaTimeModule());
 	}
 	private static final String FILEPATH = "src\\main\\resources\\patients.json";
 	public Controller() {
 		db = new Database();
+		fileChooser.setFileFilter(fileNameExtensionFilter);
 	}
 	public Database getDb() {
 		return db;
@@ -255,12 +260,16 @@ public class Controller {
 	}
 
 	public void importData(PatientTableModel patientTableModel) {
-		JFileChooser fileChooser=new JFileChooser();
 		fileChooser.setDialogTitle("Import");
 		int returnValue = fileChooser.showOpenDialog(fileChooser);
 
 		if (returnValue==JFileChooser.APPROVE_OPTION) {
 			File selectedFile = fileChooser.getSelectedFile();
+			
+			if(!FileValidation.isValidJsonFile(selectedFile)) {
+				JOptionPane.showMessageDialog(fileChooser, "Please select a valid json file","Invalid File",JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			ArrayList<Patient> importedPatients = Controller.readJsonFile(selectedFile);
 			if(importedPatients!=null) {
 				getDb().getPatients().addAll(importedPatients);
@@ -284,11 +293,12 @@ public class Controller {
 	}
 
 	public void exportData(PatientTableModel patientTableModel) {
-		JFileChooser fileChooser=new JFileChooser();
 		fileChooser.setDialogTitle("Export");
 		int returnValue = fileChooser.showSaveDialog(fileChooser);
 		if (returnValue==JFileChooser.APPROVE_OPTION) {
 			File saveFile = fileChooser.getSelectedFile();
+			
+			saveFile = FileValidation.exportValidation(saveFile);
 			if(db.getPatients()!=null||db.getPatients().size()>0) {
 				writeJsonToFile(db.getPatients(),saveFile);
 				JOptionPane.showMessageDialog(fileChooser, "Patient details saved successfully");
@@ -314,7 +324,7 @@ public class Controller {
 	}
 
 	public void updateForm(AddPatientFrame addPatientFrame,PatientTableModel patientTableModel,FormPanel formPanel,Patient patient) {
-		if(JOptionPane.showConfirmDialog(addPatientFrame, "Confirm Update","Are you sure to update?",JOptionPane.YES_NO_CANCEL_OPTION)==JOptionPane.YES_OPTION) {
+		if(JOptionPane.showConfirmDialog(addPatientFrame,"Are you sure to update?", "Confirm Update",JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION) {
 			if(validateForm(formPanel, addPatientFrame)) {
 				patient.setId(Integer.parseInt(formPanel.getId().getText()));
 				patient.setName(formPanel.getPatientName().getText());

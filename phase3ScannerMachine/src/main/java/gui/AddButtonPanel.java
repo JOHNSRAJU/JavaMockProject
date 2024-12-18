@@ -67,6 +67,28 @@ public class AddButtonPanel extends JPanel{
 				
 			}
 		});
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				if(searchField.getText().equals("")) {
+					resetTableData();
+				}
+				
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	private void filterTableData(String searchTerm) {
 		patientTableModel.filterData(searchTerm);

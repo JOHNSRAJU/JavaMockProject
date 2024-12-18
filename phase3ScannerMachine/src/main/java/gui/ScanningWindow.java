@@ -19,10 +19,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 
 import controller.Controller;
 import model.Patient;
-import model.Status;
 
 public class ScanningWindow extends JDialog{
 
@@ -115,7 +115,6 @@ public class ScanningWindow extends JDialog{
 		int rotationSpeed = Integer.parseInt((String) speedComboBox.getSelectedItem());
 
 		progressBarThread = new Thread(()->{
-
 			for(int i=progressBar.getValue();i<=100;i++){
 				if(isPaused)break;
 				final int percent =i;
@@ -126,6 +125,7 @@ public class ScanningWindow extends JDialog{
 					progressBar.setString(percent+ "%");
 					if(percent==100)
 					{
+						UIManager.put("nimbusOrange",new Color(34,189,34));
 						progressBar.setForeground(Color.GREEN);
 						progressBar.setString("Completed");
 						buttonPanel.removeAll();
@@ -203,6 +203,7 @@ public class ScanningWindow extends JDialog{
 	
 	private void resetProgressBar()
 	{
+		UIManager.put("nimbusOrange",Color.GRAY);
 		isPaused = false;
 		progressBar.setValue(0);
 		progressBar.setForeground(Color.LIGHT_GRAY);

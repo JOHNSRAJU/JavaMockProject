@@ -128,18 +128,27 @@
   "id" : 114,
   "name" : "Helen Keller",
   "dob" : [ 1987, 12, 1 ],
-  "weight" : 82.0,
+  "weight" : 85.0,
   "height" : 164.0,
-  "bmi" : 30.49,
+  "bmi" : 31.6,
   "description" : "",
   "status" : "NEW"
 }, {
   "id" : 203,
   "name" : "Gilbert Jose",
-  "dob" : [ 2024, 12, 1 ],
+  "dob" : [ 2000, 12, 5 ],
   "weight" : 38.3,
   "height" : 101.5,
   "bmi" : 37.18,
+  "description" : "",
+  "status" : "NEW"
+}, {
+  "id" : 115,
+  "name" : "Makunouchi Ippo",
+  "dob" : [ 1998, 12, 3 ],
+  "weight" : 59.0,
+  "height" : 165.0,
+  "bmi" : 21.67,
   "description" : "",
   "status" : "NEW"
 } ]

@@ -48,10 +48,12 @@ public class PatientDetailsPanel extends JPanel{
 		setLayout(new GridBagLayout());
 		setBorder(BorderFactory.createTitledBorder("Patient Data table"));
 		GridBagConstraints gc = new GridBagConstraints();
-		gc.insets = new Insets(5, 5, 5, 5);
-		gc.anchor = GridBagConstraints.FIRST_LINE_START;
-		gc.fill = GridBagConstraints.HORIZONTAL;
-		gc.weightx=0.5;
+		gc.insets = new Insets(0,0,0,2);
+		gc.anchor = GridBagConstraints.NORTHEAST;
+		// Components stretch horizontally
+        gc.weightx = 1.0;
+        gc.weighty= 1.0;
+        gc.fill=GridBagConstraints.BOTH;
 		
 		addLabel(gc, "Name:", 0);
 		addLabel(gc, "ID:", 1);
