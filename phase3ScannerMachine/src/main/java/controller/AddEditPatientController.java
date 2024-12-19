@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -7,6 +9,7 @@ import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -17,12 +20,12 @@ import model.Patient;
 import model.PatientTableModel;
 
 public class AddEditPatientController {
-	private Database database = Controller.getDatabase();
-	
+	private static Database database = Controller.getDatabase();
+
 	public void addPatientToList(Patient patient) {
 		database.getPatients().add(patient);
 	}
-	
+
 	public static double calculateBMI(double weight,double height) {
 		if(height<0) {
 			throw new IllegalArgumentException("Height should greater than Zero");
@@ -34,7 +37,7 @@ public class AddEditPatientController {
 	}
 	public Patient createPatientObject(String id,String name,Date dob, String weight,String height, String description,JFrame frame) {
 		if(id!=null&&name!=null&&dob!=null&&weight!=null&&height!=null) {
-			Patient patient = new Patient(Integer.parseInt(id), name, dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), Double.parseDouble(weight), Double.parseDouble(height), description);
+			Patient patient = new Patient(Integer.parseInt(id.trim()), name, dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), Double.parseDouble(weight), Double.parseDouble(height), description);
 			return patient;
 		}
 		return null;
@@ -50,7 +53,7 @@ public class AddEditPatientController {
 			}
 		}
 	}
-	
+
 	private boolean validateForm(FormPanel formPanel, JFrame frame) {
 
 		try {
@@ -109,7 +112,7 @@ public class AddEditPatientController {
 
 		return true; // If all checks passed
 	}
-	
+
 	private void showError(String message, JFrame frame) {
 		JOptionPane.showMessageDialog(frame, message, "Error", JOptionPane.OK_OPTION|JOptionPane.ERROR_MESSAGE);	    
 	}
@@ -134,17 +137,17 @@ public class AddEditPatientController {
 		else {
 			addPatientFrame.dispose();
 		}
-		
+
 	}
 	public static void addDocumentListenerDescription(JTextArea descriptionArea,FormPanel formPanel){
 		descriptionArea.getDocument().addDocumentListener(new DocumentListener() {
-			
+
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void insertUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
@@ -152,13 +155,42 @@ public class AddEditPatientController {
 					JOptionPane.showMessageDialog(formPanel, "Description should be below 200 characters.","Description Error",JOptionPane.OK_OPTION|JOptionPane.WARNING_MESSAGE);
 				}
 			}
-			
+
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 	}
-	
+	public static void AddIdListener(JTextField id,FormPanel form){
+		id.addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				for(Patient patient:database.getPatients()) {
+					try {
+						if(patient.getId()==Integer.parseInt(id.getText().trim())) {
+							form.getPatientName().setText(patient.getName());
+							form.getDateChooser().setDate(Date.from(patient.getDob().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+							form.getWeight().setText(new Double(patient.getWeight()).toString());
+							form.getPatientHeight().setText(new Double(patient.getHeight()).toString());
+							form.getDescriptionArea().setText(patient.getDescription());
+							return;
+						}
+					} catch (Exception error) {
+						// TODO: handle exception
+						error.printStackTrace();
+					}
+
+				}
+				return;
+
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+			}
+		});
+	}
 }

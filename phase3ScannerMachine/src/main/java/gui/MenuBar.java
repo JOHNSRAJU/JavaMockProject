@@ -39,7 +39,6 @@ public class MenuBar extends JMenuBar{
 		exitMenu.addActionListener(e->System.exit(0));
 		newFile.addActionListener((e)->controller.newFile(patientTableModel, frame));
 		openFile.addActionListener((e)->controller.openData(patientTableModel, frame));
-
 		setFont(new Font("sans-serif",Font.ITALIC, 12));
 		file.add(newFile);
 		file.add(openFile);

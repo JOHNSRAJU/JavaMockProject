@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.time.ZoneId;
 import java.util.Date;
 
@@ -26,6 +28,7 @@ public class FormPanel extends JPanel {
 	private JTextArea descriptionArea;
     public FormPanel() {
         setView();
+        AddEditPatientController.AddIdListener(id,this);
     }
 	public FormPanel(Patient selectedPatient) {
 		setView();
@@ -150,6 +153,6 @@ public class FormPanel extends JPanel {
         descriptionArea.setLineWrap(true);
         descriptionArea.setWrapStyleWord(true);
         add(new JScrollPane(descriptionArea), gc);
+        
 	}
-    
 }
